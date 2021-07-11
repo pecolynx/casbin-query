@@ -42,9 +42,6 @@ func findPets(db *gorm.DB, name string) ([]string, error) {
 
 	return petNames, nil
 }
-func TestA(t*testing.T){
-	t.Error()
-}
 
 func TestQueryObject(t *testing.T) {
 	db := openMySQLForTest()
