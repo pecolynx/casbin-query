@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	// "github.com/pecolynx/casbin-query/gateway"
 )
 
 type petEntity struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
+	"testing"
 	"time"
 
 	"github.com/casbin/casbin/v2"
@@ -70,8 +70,7 @@ func init() {
 	}
 
 	fmt.Println(wd)
-	pos := strings.Index(wd, "pkg")
-	dir := wd[0:pos] + "sqls"
+	dir := wd + "/sqls"
 	driver, err := mysql.WithInstance(sqlDB, &mysql.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -87,7 +86,6 @@ func init() {
 	}
 
 	initCasbin(db)
-
 }
 
 const conf = `[request_definition]
@@ -148,6 +146,23 @@ func initCasbin(db *gorm.DB) {
 	if err := e.SavePolicy(); err != nil {
 		panic(err)
 	}
+} 
+
+func TestPolicyCheck(t*testing.T){
+	db := openMySQLForTest()
+	m, err := model.NewModelFromString(conf)
+	if err != nil {
+		panic(err)
+	}
+	a, err := gormadapter.NewAdapterByDB(db)
+	if err != nil {
+		panic(err)
+	}
+	e, err := casbin.NewEnforcer(m, a)
+	if err != nil {
+		panic(err)
+	}
+
 
 	check := func(subject, object, action string, granted bool) {
 		res, err := e.Enforce(subject, object, action)
