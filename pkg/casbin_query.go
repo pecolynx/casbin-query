@@ -8,7 +8,7 @@ import (
 )
 
 const objectSelectSQL = `
-SELECT SUBSTRING_INDEX(tp.v1, '_', -1) as %s 
+SELECT SUBSTRING_INDEX(tp.v1, '_', -1) AS %s 
 FROM casbin_rule tg
 INNER JOIN casbin_rule tp ON tg.v1 = tp.v0
 WHERE tg.v0 = ?
@@ -16,9 +16,9 @@ AND tg.ptype = 'g'
 AND tp.ptype = 'p'
 AND tp.v2 = ?
 
-union
+UNION
 
-SELECT SUBSTRING_INDEX(tp.v1, '_', -1) as %s 
+SELECT SUBSTRING_INDEX(tp.v1, '_', -1) AS %s 
 FROM casbin_rule tp
 WHERE tp.v0 = ?
 AND tp.ptype = 'p'
