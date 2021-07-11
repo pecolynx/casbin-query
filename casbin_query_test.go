@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	// "github.com/pecolynx/casbin-query/gateway"
 )
 
 type petEntity struct {
@@ -40,6 +41,9 @@ func findPets(db *gorm.DB, name string) ([]string, error) {
 	}
 
 	return petNames, nil
+}
+func TestA(t*testing.T){
+	
 }
 
 func TestQueryObject(t *testing.T) {
