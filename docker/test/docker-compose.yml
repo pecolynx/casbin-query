@@ -1,0 +1,12 @@
+test-casbin-mysql:
+  image: mysql:5.7
+  container_name: test-casbin-mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: mysql
+    MYSQL_PORT: 3306
+    MYSQL_DATABASE: testdb
+    MYSQL_USER: user
+    MYSQL_PASSWORD: password
+    TZ: "Asia/Tokyo"
+  ports:
+    - 3307:3306
