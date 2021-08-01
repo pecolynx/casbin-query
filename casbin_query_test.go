@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-	// "github.com/pecolynx/casbin-query/gateway"
 )
 
 type petEntity struct {
@@ -21,9 +20,9 @@ func (e *petEntity) TableName() string {
 	return "pet"
 }
 
-func findPets(db *gorm.DB, name string) ([]string, error) {
+func findPets(db *gorm.DB, driverName, name string) ([]string, error) {
 	objectColumnName := "name"
-	subQuery, err := QueryObject(db, objectColumnName, "user_"+name, "read")
+	subQuery, err := QueryObject(db, driverName, objectColumnName, "user_"+name, "read")
 	if err != nil {
 		return nil, err
 	}
@@ -44,46 +43,47 @@ func findPets(db *gorm.DB, name string) ([]string, error) {
 }
 
 func TestQueryObject(t *testing.T) {
-	db := openMySQLForTest()
+	for driverName, db := range dbList() {
 
-	type args struct {
-		name string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    []string
-		wantErr bool
-	}{
-		{
-			name:    "bob",
-			args:    args{name: "bob"},
-			want:    []string{"ewok", "fluffy"},
-			wantErr: false,
-		},
-		{
-			name:    "charlie",
-			args:    args{name: "charlie"},
-			want:    []string{"gordo"},
-			wantErr: false,
-		},
-		{
-			name:    "david",
-			args:    args{name: "david"},
-			want:    []string{"ewok"},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := findPets(db, tt.args.name)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("QueryObject() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("QueryObject() = %v, want %v", got, tt.want)
-			}
-		})
+		type args struct {
+			name string
+		}
+		tests := []struct {
+			name    string
+			args    args
+			want    []string
+			wantErr bool
+		}{
+			{
+				name:    "bob",
+				args:    args{name: "bob"},
+				want:    []string{"ewok", "fluffy"},
+				wantErr: false,
+			},
+			{
+				name:    "charlie",
+				args:    args{name: "charlie"},
+				want:    []string{"gordo"},
+				wantErr: false,
+			},
+			{
+				name:    "david",
+				args:    args{name: "david"},
+				want:    []string{"ewok"},
+				wantErr: false,
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				got, err := findPets(db, driverName, tt.args.name)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("QueryObject() error = %v, wantErr %v", err, tt.wantErr)
+					return
+				}
+				if !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("QueryObject() = %v, want %v", got, tt.want)
+				}
+			})
+		}
 	}
 }
